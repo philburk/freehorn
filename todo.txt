@@ -1,0 +1,25 @@
+TODO
+
+O- Sliders for numeric entry
+O- Section ratio and length still text
+O- make scope not
+O- Presets
+	O- Save and load by name
+	O- All presets in GUI
+	O- Add new preset based on sliders
+	O- Edit preset
+	O- length and ratios disable during play. not changed by preset
+	O- Save button next to each preset
+O- amplitude function of pitch
+O- distribution centered between min/max for spectral comp and amplitude
+	
+O- review code for voice allocation
+O- add samples / multisamples
+
+O- Replace By only does one, add other replacement algorithms, or blow it off
+O- support different time for sections, eg. 1:3(2.3):2, show times calculated
+O- support JSyn plugins from Wire, "richness" input
+O- pitches 6 dB louder when introduced and then fade
+
+BUGS
+O- display update problems on Mac

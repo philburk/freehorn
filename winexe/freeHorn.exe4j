@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<exe4j version="2.1.1">
+  <directoryPresets config="E:/nomad/Clients/polansky" />
+  <application name="freeHorn" distributionSourceDir="E:/nomad/Clients/polansky" />
+  <executable name="freeHorn" type="1" iconSet="false" iconFile="" executableDir="" redirectStderr="true" stderrFile="error.log" redirectStdout="false" stdoutFile="output.log" failOnStderrOutput="true" executableMode="1" changeWorkingDirectory="true" workingDirectory="." singleInstance="false" serviceStartType="2" serviceDependencies="" jreLocation="" jreUncompressedSize="0">
+    <messageSet language="English" />
+    <versionInfo include="false" fileVersion="" companyName="" fileDescription="" legalCopyright="" productVersion="" internalName="" />
+  </executable>
+  <splashScreen show="true" autoOff="true" alwaysOnTop="true" width="400" height="300" bitmapFile="E:/nomad/Clients/polansky/freeHornSplash.png">
+    <text>
+      <statusLine x="20" y="20" text="" font="Arial" fontSize="8" fontColor="0,0,0" fontWeight="500" />
+      <versionLine x="20" y="40" text="" font="Arial" fontSize="8" fontColor="0,0,0" fontWeight="500" />
+    </text>
+  </splashScreen>
+  <java mainClass="org.frogpeak.horn.FreeHorn" vmParameters="" arguments="" allowVMPassthroughParameters="true" minVersion="1.3" maxVersion="">
+    <searchSequence>
+      <registry />
+      <envVar name="JAVA_HOME" />
+      <envVar name="JDK_HOME" />
+    </searchSequence>
+    <classPath>
+      <archive location="./FreeHorn.jar" failOnError="false" />
+    </classPath>
+    <nativeLibraryDirectories />
+  </java>
+  <includedFiles />
+</exe4j>
+
