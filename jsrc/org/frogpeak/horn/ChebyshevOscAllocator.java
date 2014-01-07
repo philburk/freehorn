@@ -9,7 +9,8 @@ import com.softsynth.math.*;
 class ChebyshevOscAllocator extends BussedVoiceAllocator
 {
 	PolynomialTableData chebData;
-	SynthTable         table;
+	SynthTable table;
+	SynthContext synthContext;
 
 	public ChebyshevOscAllocator( int maxVoices,
 				int order, int numFrames ) throws SynthException
@@ -18,12 +19,12 @@ class ChebyshevOscAllocator extends BussedVoiceAllocator
 	// make table with Chebyshev polynomial to share among voices
 		PolynomialTableData chebData =
 		          new PolynomialTableData(ChebyshevPolynomial.T(order), numFrames);
-		table = new SynthTable(  chebData.getData() );
+		table = new SynthTable( chebData.getData() );
 	}
 	
 	public SynthCircuit makeVoice() throws SynthException
 	{
-		WaveShapingCircuit circ = new WaveShapingCircuit( table );
+		WaveShapingCircuit circ = new WaveShapingCircuit( table);
 		circ.amplitude.set( 1.0 / getMaxVoices() );
 		return (SynthCircuit) addVoiceToMix( circ );
 	}

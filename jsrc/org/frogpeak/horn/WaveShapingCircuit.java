@@ -10,9 +10,9 @@ import com.softsynth.jsyn.*;
 public class WaveShapingCircuit extends SynthNote
 {
 	SineOscillator unitOsc; /* used to scan small the table */
-	EnvelopePlayer rangeEnv;
+	//EnvelopePlayer rangeEnv;
 	EnvelopePlayer ampEnv;
-	SynthEnvelope rangeEnvData;
+	//SynthEnvelope rangeEnvData;
 	SynthEnvelope ampEnvData;
 	WaveShaper unitWaveShaper;
 	SynthInput range;
@@ -20,19 +20,21 @@ public class WaveShapingCircuit extends SynthNote
 		0.50, 0.0, /* duration,value pair for frame[1] */
 	};
 
-	public WaveShapingCircuit(SynthTable table) throws SynthException
+	public WaveShapingCircuit( SynthTable table) throws SynthException
 	{
+		
 		add(unitWaveShaper = new WaveShaper());
 		add(unitOsc = new SineOscillator());
-		add(rangeEnv = new EnvelopePlayer());
+		//add(rangeEnv = new EnvelopePlayer());
 		add(ampEnv = new EnvelopePlayer());
 
 		unitWaveShaper.tablePort.setTable(table);
 		// Create a range envelope and fill it with data. */
-		double[] rangeData = { 0.02, 1.00, /* duration,value pairs */
-			0.20, 0.20, 0.20, 0.30, 2.00, 0.01, };
-		rangeEnvData = new SynthEnvelope(rangeData);
-		rangeEnvData.setSustainLoop(2, 2 + 2);
+		//double[] rangeData = { 0.02, 1.00, /* duration,value pairs */
+		//	0.20, 0.20, 0.20, 0.30, 2.00, 0.01, };
+		//rangeEnvData = new SynthEnvelope(rangeData);
+		//rangeEnvData.setSustainLoop(2, 2 + 2);
+		//rangeEnvData.setSustainLoop(2, 2 + 2);
 
 		// Create an amplitude envelope and fill it with data.
 		ampEnvData = new SynthEnvelope(ampData);
@@ -42,10 +44,12 @@ public class WaveShapingCircuit extends SynthNote
 		addPort(frequency = unitOsc.frequency);
 		addPort(amplitude = ampEnv.amplitude);
 		addPort(output = unitWaveShaper.output);
-		addPort(range = rangeEnv.amplitude);
+		//addPort(range = rangeEnv.amplitude);
+		addPort(range = unitOsc.amplitude);
 
 		/* Connect units */
-		rangeEnv.output.connect(unitOsc.amplitude);
+		//rangeEnv.output.connect(unitOsc.amplitude);
+		
 		ampEnv.output.connect(unitWaveShaper.amplitude);
 		unitOsc.output.connect(unitWaveShaper.input);
 
@@ -57,16 +61,16 @@ public class WaveShapingCircuit extends SynthNote
 		switch (stage)
 		{
 			case 0 :
-				//			stop( time );
-				rangeEnv.envelopePort.clear(time);
+				//stop( time );
+				//rangeEnv.envelopePort.clear(time);
 				ampEnv.envelopePort.clear(time);
-				rangeEnv.envelopePort.queueOn(time, rangeEnvData);
+				//rangeEnv.envelopePort.queueOn(time, rangeEnvData);
 				ampEnv.envelopePort.queueOn(time, ampEnvData);
 				start(time);
 				break;
 			case 1 :
-				rangeEnv.envelopePort.queueOff(time, rangeEnvData);
-				// Set AutoStop feature of amp envelope so that unit stops when data gone.
+				//rangeEnv.envelopePort.queueOff(time, rangeEnvData);
+				//Set AutoStop feature of amp envelope so that unit stops when data gone.
 				ampEnv.envelopePort.queueOff(time, ampEnvData, true);
 				break;
 		}

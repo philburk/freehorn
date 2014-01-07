@@ -31,10 +31,10 @@ public class ReplacementByClosestFreq extends ReplacementAlgorithm
 	{
 		double minDistance = Double.MAX_VALUE;
 		HarmonicPlayer closestPlayer = null;
-		Enumeration enum = harmonicPlayers.elements();
-		while (enum.hasMoreElements())
+		Enumeration en = harmonicPlayers.elements();
+		while (en.hasMoreElements())
 		{
-			HarmonicPlayer player = (HarmonicPlayer) enum.nextElement();
+			HarmonicPlayer player = (HarmonicPlayer) en.nextElement();
 			double distance = Math.abs(frequency - player.getFrequency());
 			if (distance < minDistance)
 			{

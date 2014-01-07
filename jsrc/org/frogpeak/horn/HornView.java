@@ -1,8 +1,10 @@
 package org.frogpeak.horn;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
+import java.awt.Label;
 import java.awt.Panel;
 
 
@@ -21,14 +23,16 @@ public class HornView extends Frame
 	 */
 	public HornView(FreeHorn pApp, HornModel pModel, HornPlayer pPlayer)
 	{
-		super("freeHorn View by Larry Polansky");
+		super("Clock");
 		model = pModel;
 		app = pApp;
 		player = pPlayer;
-		setSize(400, 300);
 		
-		Font font = new Font("SansSerif", Font.BOLD, 28 );
-		setFont( font );
+		setPreferredSize(new Dimension(650, 300));
+		
+		Font fontTimeLabel = new Font("SansSerif", Font.BOLD, 28 );
+		//Font fontCPU = new Font("SansSerif", Font.BOLD, 14 );
+		setFont( fontTimeLabel );
 
 		setLayout(new BorderLayout());
 		add( "North", new HornClockView(player) );
@@ -36,7 +40,9 @@ public class HornView extends Frame
 		Panel nextPanel = new Panel();
 		nextPanel.setLayout(new BorderLayout());
 
-		nextPanel.add( "North", new CPULoadView(player) );
+		//nextPanel.add( "North", new Label("time = ") );
+		//setFont( fontCPU );
+		nextPanel.add( "South", new CPULoadView(player) );
 		nextPanel.add( "Center", new HornActivityView(player) );
 
 		add( "Center", nextPanel );

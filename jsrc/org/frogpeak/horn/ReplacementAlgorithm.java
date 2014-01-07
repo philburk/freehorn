@@ -23,10 +23,10 @@ public abstract class ReplacementAlgorithm
 	 */
 	public void stop()
 	{
-		Enumeration enum = harmonicPlayers.elements();
-		while (enum.hasMoreElements())
+		Enumeration en = harmonicPlayers.elements();
+		while (en.hasMoreElements())
 		{
-			HarmonicPlayer player = (HarmonicPlayer) enum.nextElement();
+			HarmonicPlayer player = (HarmonicPlayer) en.nextElement();
 			System.out.println("ReplacementAlgorithm: stopping " + player );
 			player.stop();
 		}

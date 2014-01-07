@@ -2,6 +2,7 @@ package org.frogpeak.horn;
 
 import java.awt.BorderLayout;
 import java.awt.Canvas;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Panel;
 import java.util.Observable;
@@ -34,10 +35,11 @@ public class HornActivityView extends Panel implements Observer
 		public void paint(Graphics g)
 		{
 
-			int x = 10;
-			int y = 30;
+			int x = 50;
+			int y = 100;
 			int lineHeight = 40;
 			g.setColor(getForeground());
+			
 			if (sectionPlayer != null)
 			{
 				int sectionIndex = sectionPlayer.getSectionIndex();
@@ -61,25 +63,25 @@ public class HornActivityView extends Panel implements Observer
 						text =
 							" Starting "
 								+ model.getSectionRatio(evt.newSection)
-								+ " * "
-								+ evt.newHarmonic;
+								+ " ("
+								+ evt.newHarmonic + ")";
 						break;
 					case ReplacementEvent.REPLACING :
 						text =
 							model.getSectionRatio(evt.newSection)
-								+ " * "
-								+ evt.newHarmonic
+								+ " ("
+								+ evt.newHarmonic + ")"
 								+ " replacing "
 								+ model.getSectionRatio(evt.oldSection)
-								+ " * "
-								+ evt.oldHarmonic;
+								+ " ("
+								+ evt.oldHarmonic + ")";
 						break;
 					case ReplacementEvent.STOPPING :
 						text =
 							" Stopping "
 								+ model.getSectionRatio(evt.oldSection)
-								+ " * "
-								+ evt.oldHarmonic;
+								+ " ("
+								+ evt.oldHarmonic + ")";
 						break;
 				}
 				if (text != null)

@@ -42,7 +42,7 @@ public class HarmonicPlayer extends HornThread
 			pitchScaler
 				* MathTools.nextGaussian(
 					model.getDurationMean(),
-					model.getDurationRange(),
+					model.getDurationSpread(),
 					model.getDurationMin(),
 					model.getDurationMax());
 
@@ -52,7 +52,7 @@ public class HarmonicPlayer extends HornThread
 			pitchScaler
 				* MathTools.nextGaussian(
 					ier * model.getDurationMean(),
-					ier * model.getDurationRange(),
+					ier * model.getDurationSpread(),
 					ier * model.getDurationMin(),
 					ier * model.getDurationMax());
 
@@ -72,7 +72,7 @@ public class HarmonicPlayer extends HornThread
 			if (holdTime < 0)
 			{
 				holdTime = 0.0;
-				// scale attack and decay so they fit within duration
+				//scale attack and decay so they fit within duration
 				double scaler = duration / rampTime;
 				attackTime *= scaler;
 				decayTime *= scaler;
@@ -88,6 +88,7 @@ public class HarmonicPlayer extends HornThread
 				decayTime,
 				model.getSpectralComplexity());
 		}
+		
 		return nextTime + duration + interEventTime;
 	}
 
@@ -99,11 +100,27 @@ public class HarmonicPlayer extends HornThread
 	private double randomRange(double min, double max)
 	{
 		double range = max - min;
-		if (range < 0.0)
-			return min;
-		else
-			return (range * Math.random()) + min;
+		int repeat = 8;
+		double sum = 0;
+		for (int i = 0; i < repeat; i++){
+			sum += Math.random()*range;
+		}
+		//System.out.println(sum/repeat+min);
+		return sum/repeat+min;
+		
+//		if (range < 0.0)
+//			return min;
+//		else
+//			return (range * Math.random()) + min;
 	}
+	
+//	private double stupidGaussian(int repeat){
+//		double sum = 0;
+//		for (int i = 0; i < repeat; i++){
+//			sum += Math.random();
+//		}
+//		return sum/repeat;
+//	}
 
 	public void run()
 	{

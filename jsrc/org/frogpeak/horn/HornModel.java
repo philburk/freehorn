@@ -23,18 +23,23 @@ public class HornModel
 	private double loudness = 0.5;
 	private double fundamentalFrequency = 110.0;
 	private int numHarmonics = 17;
-	private double[] sectionRatios;
-	private int maxPolyphony = 32;
-	private double durationMean = 0.2;
-	private double durationRange = 0.1;
-	private double durationMin = 0.05;
-	private double durationMax = 0.5;
+	private double[] sectionRatios = {1,1.25,1.5,1};
+	private String sectionRatiosString = "1:1.25:1.5:1";
+	private int maxPolyphony = 100;
+	private double durationMean = 2;
+	private double durationSpread = 0.1;
+	private double durationMin = 0.3;
+	private double durationMax = 1.5;
 	private double interEventRest = 0.5;
 	private double fadeFactor = 1.0;
-	private double attackMin = 0.01;
-	private double attackMax = 0.04;
+	private double attackMin = 0.2;
+	private double attackMax = 1.0;
 	private double decayMin = 0.2;
 	private double decayMax = 1.0;
+	
+	private double[] gain = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+
+	
 	// fadeTime = fadeFactor * (sectionDuration/humHarmonics)
 	private String replacementAlgorithm =
 		ReplacementAlgorithmFactory.getChoices()[0];
@@ -43,6 +48,17 @@ public class HornModel
 
 	private PitchScalingAlgorithm pitchScalingAlgorithm =
 		new PitchScalingAlgorithm();
+	
+
+	public double getGain(int i)
+	{
+		return gain[i];
+	}
+
+	public void setGain(int i, double g)
+	{
+		gain[i] = g;
+	}
 
 	/**
 	 * @return
@@ -155,6 +171,7 @@ public class HornModel
 	protected void setSectionRatios(String text)
 	{
 
+		sectionRatiosString = text;
 		Vector subs = parseDelimitedStrings(text, ':');
 		double[] ratios = new double[subs.size()];
 		for (int i = 0; i < ratios.length; i++)
@@ -333,9 +350,9 @@ public class HornModel
 	/**
 	 * @return
 	 */
-	public double getDurationRange()
+	public double getDurationSpread()
 	{
-		return durationRange;
+		return durationSpread;
 	}
 
 	/**
@@ -365,9 +382,9 @@ public class HornModel
 	/**
 	 * @param d
 	 */
-	public void setDurationRange(double d)
+	public void setDurationSpread(double d)
 	{
-		durationRange = d;
+		durationSpread = d;
 	}
 
 	/**
@@ -414,6 +431,8 @@ public class HornModel
 		Properties properties = new Properties();
 
 		putDoubleProperty(properties, "totalLength", totalLength);
+		properties.setProperty("sectionRatios", sectionRatiosString);
+		putDoubleProperty(properties, "numHarmonics", numHarmonics);
 		putDoubleProperty(properties, "restProbability", restProbability);
 		putDoubleProperty(properties, "spectralComplexity", spectralComplexity);
 		putDoubleProperty(properties, "loudness", loudness);
@@ -422,13 +441,13 @@ public class HornModel
 			"fundamentalFrequency",
 			fundamentalFrequency);
 		putDoubleProperty(properties, "durationMean", durationMean);
-		putDoubleProperty(properties, "durationRange", durationRange);
+		putDoubleProperty(properties, "durationSpread", durationSpread);
 		putDoubleProperty(properties, "durationMin", durationMin);
 		putDoubleProperty(properties, "durationMax", durationMax);
-		putDoubleProperty(properties, "attackMin", durationMin);
-		putDoubleProperty(properties, "attackMax", durationMax);
-		putDoubleProperty(properties, "decayMin", durationMin);
-		putDoubleProperty(properties, "decayMax", durationMax);
+		putDoubleProperty(properties, "attackMin", attackMin);
+		putDoubleProperty(properties, "attackMax", attackMax);
+		putDoubleProperty(properties, "decayMin", decayMin);
+		putDoubleProperty(properties, "decayMax", decayMax);
 		putDoubleProperty(properties, "interEventRest", interEventRest);
 		properties.setProperty("replacementAlgorithm", replacementAlgorithm);
 		
@@ -436,6 +455,10 @@ public class HornModel
 			"pitchScalingAlgorithm",
 			pitchScalingAlgorithm.getName());
 		putDoubleProperty(properties, "pitchScalingfactor", pitchScalingFactor);
+		
+		for(int i = 0; i < 30; i++){
+			putDoubleProperty(properties, "gain" + i, gain[i]);
+		}
 		
 		properties.save(bufStream, "Preferences for FreeHorn");
 		bufStream.close();
@@ -446,6 +469,7 @@ public class HornModel
 		properties.setProperty(name, Double.toString(value));
 
 	}
+	
 	double getDoubleProperty(
 		Properties properties,
 		String name,
@@ -472,6 +496,8 @@ public class HornModel
 		properties.load(bufStream);
 
 		totalLength = getDoubleProperty(properties, "totalLength", totalLength);
+		numHarmonics = (int) getDoubleProperty(properties, "numHarmonics", numHarmonics);
+		setSectionRatios(properties.getProperty("sectionRatios"));
 		restProbability =
 			getDoubleProperty(properties, "restProbability", restProbability);
 		spectralComplexity =
@@ -487,8 +513,8 @@ public class HornModel
 				fundamentalFrequency);
 		durationMean =
 			getDoubleProperty(properties, "durationMean", durationMean);
-		durationRange =
-			getDoubleProperty(properties, "durationRange", durationRange);
+		durationSpread =
+			getDoubleProperty(properties, "durationSpread", durationSpread);
 		durationMin = getDoubleProperty(properties, "durationMin", durationMin);
 		durationMax = getDoubleProperty(properties, "durationMax", durationMax);
 		attackMin = getDoubleProperty(properties, "attackMin", attackMin);
@@ -506,6 +532,11 @@ public class HornModel
 		}
 		pitchScalingFactor = getDoubleProperty(properties, "pitchScalingFactor", pitchScalingFactor);
 
+		for(int i = 0; i < 30; i++){
+			gain[i] = getDoubleProperty(properties, "gain" + i, gain[0]);
+		}
+
+		
 		bufStream.close();
 	}
 

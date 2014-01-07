@@ -50,8 +50,8 @@ public class HornClockView extends Label implements Runnable
 		int iMinutes = (int)(seconds / 60.0);
 		double remSeconds = seconds - (60 * iMinutes);
 		int iSeconds = (int) remSeconds;
-		double fract = remSeconds - iSeconds;
-		int iDeciSeconds = (int) (fract * 10.0);
+		//double fract = remSeconds - iSeconds;
+		//int iDeciSeconds = (int) (fract * 10.0);
 		
 		StringBuffer buf = new StringBuffer();
 		buf.append("Time = ");
@@ -59,8 +59,8 @@ public class HornClockView extends Label implements Runnable
 		buf.append(':');
 		if( iSeconds < 10 )buf.append('0');
 		buf.append(iSeconds);
-		buf.append('.');
-		buf.append(iDeciSeconds);
+		//buf.append('.');
+		//buf.append(iDeciSeconds);
 		
 		return buf.toString();
 	}

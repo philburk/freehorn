@@ -38,10 +38,10 @@ public class ReplacementByClosestPitch extends ReplacementAlgorithm
 		double pitch = Math.log(frequency);
 		double minDistance = Double.MAX_VALUE;
 		HarmonicPlayer closestPlayer = null;
-		Enumeration enum = harmonicPlayers.elements();
-		while (enum.hasMoreElements())
+		Enumeration en = harmonicPlayers.elements();
+		while (en.hasMoreElements())
 		{
-			HarmonicPlayer player = (HarmonicPlayer) enum.nextElement();
+			HarmonicPlayer player = (HarmonicPlayer) en.nextElement();
 			double testPitch = Math.log(player.getFrequency());
 			double distance = Math.abs(pitch - testPitch);
 			if (distance < minDistance)

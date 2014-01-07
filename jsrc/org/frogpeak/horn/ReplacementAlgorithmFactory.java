@@ -10,12 +10,12 @@ public class ReplacementAlgorithmFactory
 	/** Return array of name strings for possible replacement algorithms. */
 	static
 	{
-		names = new String[4];
+		names = new String[3];
 		int i=0;
 		names[i++] = ReplacementByClosestPitch.getName(); // default
 		names[i++] = ReplacementByEquivalentHarmonic.getName();
 		names[i++] = ReplacementByClosestFreq.getName();
-		names[i++] = "Mixed";
+		//names[i++] = "Mixed";
 	}
 	
 	/** Return array of name strings for possible replacement algorithms. */

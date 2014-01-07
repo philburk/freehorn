@@ -43,6 +43,12 @@ public class CustomTextField extends TextField
 		super(text);
 		setupKeyListener();
 	}
+	
+	public CustomTextField(String text, int numColumns)
+	{
+		super(text, numColumns);
+		setupKeyListener();
+	}
 
 	void markDirty()
 	{

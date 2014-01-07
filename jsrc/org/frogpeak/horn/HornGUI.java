@@ -1,6 +1,7 @@
 package org.frogpeak.horn;
 
 import java.awt.Choice;
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Label;
@@ -15,6 +16,8 @@ import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.swing.JSlider;
+
 /**
  * @author Phil Burk (C) 2003
  */
@@ -26,6 +29,23 @@ public class HornGUI extends Frame
 	FreeHorn app;
 	private Choice replacementChoice;
 	private Choice pitchScalingChoice;
+	
+	Slider totalLengthSlider;
+	Slider numHarmonicsSlider;
+	Slider fundFreqSlider;
+	Slider durMeanSlider;
+	Slider durSpreadSlider;
+	Slider durMinSlider;
+	Slider durMaxSlider;
+	Slider attackMinSlider;
+	Slider decayMinSlider;
+	Slider attackMaxSlider;
+	Slider decayMaxSlider;
+	Slider interEventSlider;
+	Slider restSlider;
+	Slider spectrumSlider;
+	Slider loudnessSlider;
+	Slider pitchScaleSlider;
 
 	/**
 	 * @param model
@@ -36,6 +56,9 @@ public class HornGUI extends Frame
 		model = pModel;
 		app = pApp;
 		player = pPlayer;
+		
+		setPreferredSize(new Dimension(600, 800));
+		//pack();
 
 		addWindowListener(new WindowAdapter()
 		{
@@ -45,13 +68,20 @@ public class HornGUI extends Frame
 			}
 		});
 
-		setLayout(new GridLayout(0, 2));
+		GridLayout gL = new GridLayout(0, 2);
+		gL.setHgap(20);
+		setLayout(gL);
+		
+		add(new Label("Static Variables:"));
+		add(new Label(""));
+		
 
-		add(new NumericEntry(
+		add(totalLengthSlider = new Slider(
 			"Total Length (minutes)",
 			(double) model.getTotalLength(),
 			0.1,
-			1000000.0)
+			360.0,
+			0)
 		{
 			// This will get called when user hits enter in field.
 			public void valueChanged(double value)
@@ -59,41 +89,93 @@ public class HornGUI extends Frame
 				model.setTotalLength(value);
 			}
 		});
+		
+		final int FPS_MIN = 0;
+		final int FPS_MAX = 30;
+		final int FPS_INIT = 15;
+		
+		JSlider test = new JSlider(JSlider.HORIZONTAL,
+                FPS_MIN, FPS_MAX, FPS_INIT);
 
-		model.setSectionRatios("1:3:5:1");
-		add(new TextEntry("Section Ratios", "1:3:5:1")
+		
+		//add(test);
+
+		//model.setSectionRatios("1:3:5:1");
+		double[] sectionRatios = model.getSectionRatios();
+		String sectionRatiosString = "";
+		for(int i = 0; i < sectionRatios.length; i++){
+			sectionRatiosString = sectionRatiosString + sectionRatios[i];
+			if(i < sectionRatios.length - 1){
+			sectionRatiosString = sectionRatiosString + ":";
+			}
+		}
+		
+		add(new TextEntry("Section Ratios", sectionRatiosString)
 		{
 			public void valueChanged(String text)
 			{
 				model.setSectionRatios(text);
 			}
 		});
-
-		add(new NumericEntry(
-			"Fundamental Freq",
-			model.getFundamentalFrequency(),
-			10.0,
-			10000.0)
-		{
-			public void valueChanged(double value)
-			{
-				model.setFundamentalFrequency(value);
-			}
-		});
-
-		add(new NumericEntry("Num Harmonics", model.getNumHarmonics(), 1, 100)
+		
+		add(numHarmonicsSlider = new Slider("Num Harmonics", model.getNumHarmonics(), 1, 100, 0)
 		{
 			public void valueChanged(double value)
 			{
 				model.setNumHarmonics((int) Math.round(value));
 			}
 		});
+		
+		// ReplacementAlgorithm
+		Panel replacementPanel = new Panel();
+		replacementPanel.setLayout(new GridLayout(2,1));
+		replacementPanel.add(new Label("Replace By:"));
+		replacementPanel.add(replacementChoice = new Choice());
+		add(replacementPanel);
+		// The order of these must match the order of the 
+		String[] replacementNames = ReplacementAlgorithmFactory.getChoices();
+		for (int n = 0; n < replacementNames.length; n++)
+		{
+			replacementChoice.add(replacementNames[n]);
+		}
+		replacementChoice.select(model.getReplacementAlgorithm());
+		replacementChoice.addItemListener(new ItemListener()
+		{
 
-		add(new NumericEntry(
+			public void itemStateChanged(ItemEvent e)
+			{
+				model.setReplacementAlgorithm(
+					replacementChoice.getSelectedItem());
+			}
+		});
+		
+		add(new Label("-----------------------------------------"));
+		add(new Label("-----------------------------------------"));
+		
+		add(new Label("Dynamic Variables:"));
+		add(new Label(""));
+
+		add(fundFreqSlider = new Slider(
+			"Fundamental Freq",
+			model.getFundamentalFrequency(),
+			10.0,
+			10000.0,
+			0)
+		{
+			public void valueChanged(double value)
+			{
+				model.setFundamentalFrequency(value);
+			}
+		});
+		
+		add(new Label(""));
+
+		add(durMeanSlider = new Slider(
 			"Duration Mean",
 			model.getDurationMean(),
-			0.01,
-			100.0)
+			0.02,
+			40,
+			0)
 		{
 			public void valueChanged(double value)
 			{
@@ -101,73 +183,82 @@ public class HornGUI extends Frame
 			}
 		});
 
-		add(new NumericEntry(
-			"Duration Range",
-			model.getDurationRange(),
-			0.01,
-			100.0)
+		add(durSpreadSlider = new Slider(
+			"Duration Spread",
+			model.getDurationSpread(),
+			0.02,
+			20.0,
+			0)
 		{
 			public void valueChanged(double value)
 			{
-				model.setDurationRange(value);
+				model.setDurationSpread(value);
 			}
 		});
+		
+		add(durMinSlider = new Slider(
+				"Duration Min",
+				model.getDurationMin(),
+				0.02,
+				100.0,
+				0)
+			{
+				public void valueChanged(double value)
+				{
+					model.setDurationMin(value);
+					attackMinSlider.setMax(value);
+					decayMinSlider.setMax(value);
+				}
+			});
+			add(durMaxSlider = new Slider(
+				"Duration Max",
+				model.getDurationMax(),
+				0.02,
+				100.0,
+				0)
+			{
+				public void valueChanged(double value)
+				{
+					model.setDurationMax(value);
+					attackMaxSlider.setMax(value);
+					decayMaxSlider.setMax(value);
+				}
+			});
 
-		add(new NumericEntry("Attack Min", model.getAttackMin(), 0.01, 100.0)
+		add(attackMinSlider = new Slider("Attack Min", model.getAttackMin(), 0.01, 20.0, 0)
 		{
 			public void valueChanged(double value)
 			{
 				model.setAttackMin(value);
 			}
 		});
-		add(new NumericEntry("Attack Max", model.getAttackMax(), 0.01, 100.0)
+		add(attackMaxSlider = new Slider("Attack Max", model.getAttackMax(), 0.01, 20.0, 0)
 		{
 			public void valueChanged(double value)
 			{
 				model.setAttackMax(value);
 			}
 		});
-		add(new NumericEntry("Decay Min", model.getDecayMin(), 0.01, 100.0)
+		add(decayMinSlider = new Slider("Decay Min", model.getDecayMin(), 0.01, 20.0, 0)
 		{
 			public void valueChanged(double value)
 			{
 				model.setDecayMin(value);
 			}
 		});
-		add(new NumericEntry("Decay Max", model.getDecayMax(), 0.01, 100.0)
+		add(decayMaxSlider = new Slider("Decay Max", model.getDecayMax(), 0.01, 20.0, 0)
 		{
 			public void valueChanged(double value)
 			{
 				model.setDecayMax(value);
 			}
 		});
-		add(new NumericEntry(
-			"Duration Min",
-			model.getDurationMin(),
-			0.01,
-			100.0)
-		{
-			public void valueChanged(double value)
-			{
-				model.setDurationMin(value);
-			}
-		});
-		add(new NumericEntry(
-			"Duration Max",
-			model.getDurationMax(),
-			0.01,
-			100.0)
-		{
-			public void valueChanged(double value)
-			{
-				model.setDurationMax(value);
-			}
-		});
-		add(new NumericEntry(
+		add(interEventSlider = new Slider(
 			"Inter Event Rest",
 			model.getInterEventRest(),
 			0.0,
-			10.0)
+			10.0,
+			0)
 		{
 			public void valueChanged(double value)
 			{
@@ -194,11 +285,12 @@ public class HornGUI extends Frame
 				});
 		*/
 
-		add(new NumericEntry(
+		add(restSlider = new Slider(
 			"Rest Probability",
 			model.getRestProbability(),
 			0.0,
-			1.0)
+			1.0,
+			0)
 		{
 			public void valueChanged(double value)
 			{
@@ -206,11 +298,12 @@ public class HornGUI extends Frame
 			}
 		});
 
-		add(new NumericEntry(
+		add(spectrumSlider = new Slider(
 			"Spectral Complexity",
 			model.getSpectralComplexity(),
 			0.0,
-			1.0)
+			1.0,
+			0)
 		{
 			public void valueChanged(double value)
 			{
@@ -218,7 +311,7 @@ public class HornGUI extends Frame
 			}
 		});
 
-		add(new NumericEntry("Loudness", model.getLoudness(), 0.0, 11.0)
+		add(loudnessSlider = new Slider("Loudness", model.getLoudness(), 0.0, 1.0, 0)
 		{
 			public void valueChanged(double value)
 			{
@@ -227,7 +320,7 @@ public class HornGUI extends Frame
 		});
 
 
-		add(new NumericEntry("Pitch Scaling Factor", model.getPitchScalingFactor(), 0.0, 1.0)
+		add(pitchScaleSlider = new Slider("Pitch Scaling Factor", model.getPitchScalingFactor(), 0.0, 1.0, 0)
 		{
 			public void valueChanged(double value)
 			{
@@ -237,14 +330,15 @@ public class HornGUI extends Frame
 
 		// PitchScalingAlgorithm
 		Panel pitchScalingPanel = new Panel();
+		pitchScalingPanel.setLayout(new GridLayout(2,1));
 		pitchScalingPanel.add(new Label("Pitch Scale by :"));
 		pitchScalingPanel.add(pitchScalingChoice = new Choice());
 		add(pitchScalingPanel);
 		// The order of these must match the order of the 
-		String[] names = PitchScalingAlgorithmFactory.getChoices();
-		for (int n = 0; n < names.length; n++)
+		String[] pitchScaleNames = PitchScalingAlgorithmFactory.getChoices();
+		for (int n = 0; n < pitchScaleNames.length; n++)
 		{
-			pitchScalingChoice.add(names[n]);
+			pitchScalingChoice.add(pitchScaleNames[n]);
 		}
 		pitchScalingChoice.select(model.getPitchScalingAlgorithm().getName());
 		pitchScalingChoice.addItemListener(new ItemListener()
@@ -254,28 +348,29 @@ public class HornGUI extends Frame
 				model.setPitchScalingAlgorithmByName(pitchScalingChoice.getSelectedItem());
 			}
 		});
+		
+		totalLengthSlider.setTextFieldValue();
+		numHarmonicsSlider.setTextFieldValue();
+		fundFreqSlider.setTextFieldValue();
+		durMeanSlider.setTextFieldValue();
+		durSpreadSlider.setTextFieldValue();
+		durMinSlider.setTextFieldValue();
+		durMaxSlider.setTextFieldValue();
+		attackMinSlider.setTextFieldValue();
+		decayMinSlider.setTextFieldValue();
+		attackMaxSlider.setTextFieldValue();
+		decayMaxSlider.setTextFieldValue();
+		interEventSlider.setTextFieldValue();
+		restSlider.setTextFieldValue();
+		spectrumSlider.setTextFieldValue();
+		loudnessSlider.setTextFieldValue();
+		pitchScaleSlider.setTextFieldValue();
+		
+		add(new Label("-----------------------------------------"));
+		add(new Label("-----------------------------------------"));
+		add(new Label("Play Controls:"));
+		add(new Label(""));
 
-		// ReplacementAlgorithm
-		Panel replacementPanel = new Panel();
-		replacementPanel.add(new Label("Replace By:"));
-		replacementPanel.add(replacementChoice = new Choice());
-		add(replacementPanel);
-		// The order of these must match the order of the 
-		names = ReplacementAlgorithmFactory.getChoices();
-		for (int n = 0; n < names.length; n++)
-		{
-			replacementChoice.add(names[n]);
-		}
-		replacementChoice.select(model.getReplacementAlgorithm());
-		replacementChoice.addItemListener(new ItemListener()
-		{
-
-			public void itemStateChanged(ItemEvent e)
-			{
-				model.setReplacementAlgorithm(
-					replacementChoice.getSelectedItem());
-			}
-		});
 		add(playController = new PlayController(player));
 
 		validate();
