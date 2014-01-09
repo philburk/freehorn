@@ -13,7 +13,7 @@ import com.softsynth.jsyn.SynthContext;
  */
 public class FreeHorn
 {
-	public static final String VERSION = "0.4 (build 17)";
+	public static final String VERSION = "0.4 (build 18)";
 	private HornView view;
 	HornModel model;
 	HornGUI gui;
