@@ -1,5 +1,4 @@
 # FreeHorn, by Larry Polansky
-Automatically exported from code.google.com/p/freehorn
 
 FreeHorn is a computer music application, meant to accompany live instrumentalists. It has been performed many times over the past 10 years in a wide variety of circumstances and musical configurations.
 
