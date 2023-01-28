@@ -9,3 +9,28 @@ Code for freeHorn was originally written by Phil Burk (with Larry Polansky) in J
 Some archival, live recordings are available at //http://eamusic.dartmouth.edu/~larry/archive.recordings.html
 
 Various other notes (a partial manual) are at http://eamusic.dartmouth.edu/~larry/freeHorn/index.html
+
+## To Run FreeHorn
+
+A precompiled version of FreeHorn is include in the Git repo.
+
+You install a Java JDK or JRE before running FreeHorn.
+Then enter:
+
+    cd freehorn
+    java -jar FreeHorn.java
+
+## To Build FreeHorn
+
+Install ANT and Java JDK.
+
+Enter:
+
+    ant
+    
+An complete JAR file that contains FreeHorn and JSyn will be build and placed in the "dist/lib" folder.
+The name of the JAR file will have a datestamp so it keep changing.
+To run it, enter:
+
+    ls dist/lib  # check the JAR name
+    java -jar dist/lib/FreeHorn-{date}.jar
