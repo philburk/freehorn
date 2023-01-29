@@ -12,9 +12,9 @@ Various other notes (a partial manual) are at http://eamusic.dartmouth.edu/~larr
 
 ## To Run FreeHorn
 
-A precompiled version of FreeHorn is include in the Git repo.
+A precompiled version of FreeHorn is included in the Git repo.
 
-You install a Java JDK or JRE before running FreeHorn.
+You need to install a Java JDK or JRE before running FreeHorn.
 Then enter:
 
     cd freehorn
@@ -22,15 +22,16 @@ Then enter:
 
 ## To Build FreeHorn
 
-Install ANT and Java JDK.
+Install ANT and a Java JDK.
 
 Enter:
 
+    cd freehorn
     ant
     
-An complete JAR file that contains FreeHorn and JSyn will be build and placed in the "dist/lib" folder.
-The name of the JAR file will have a datestamp so it keep changing.
+A complete JAR file that contains FreeHorn and JSyn will be built and placed in the "dist/lib" folder.
+The name of the JAR file will have a datestamp. So it keeps changing.
 To run it, enter:
 
     ls dist/lib  # check the JAR name
-    java -jar dist/lib/FreeHorn-{date}.jar
+    java -jar dist/lib/FreeHorn-{datestamp}.jar
