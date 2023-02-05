@@ -26,7 +26,7 @@ import com.softsynth.jsyn.*;
  * <P>
  * The underlying device interface is based on the PortAudio library which is
  * available at http://www.portaudio.com
- * 
+ *
  * @author (C) 2001-2007 Phil Burk, Mobileer Inc, All Rights Reserved
  */
 
@@ -44,6 +44,9 @@ public class TJ_Devices extends Applet
 	Button stopButton;
 	public final static int INPUT_MODE = 0;
 	public final static int OUTPUT_MODE = 1;
+
+
+	private final static int MAX_NUM_CHANNELS = 16;
 
 	/* Can be run as either an application or as an applet. */
 	public static void main( String args[] )
@@ -187,6 +190,7 @@ public class TJ_Devices extends Applet
 		freeHorn.finalizeSetup();
 	}
 
+	@Override
 	public void stop()
 	{
 		try
@@ -247,6 +251,7 @@ public class TJ_Devices extends Applet
 			maxChannels = pMaxChannels;
 		}
 
+		@Override
 		public String toString()
 		{
 			return name + " [" + maxChannels + "]";
@@ -304,7 +309,16 @@ public class TJ_Devices extends Applet
 			int defaultSelection = 0;
 			// Loop though all of the available devices and fill
 			// the choice menu with valid options.
-			for( int i = 0; i < AudioDevice.getNumDevices(); i++ )
+			int numDevices = AudioDevice.getNumDevices();
+			System.out.println("TJ_Devices mode = " + mode
+					+ ", numDevices = " + numDevices);
+			final int MAX_NUM_DEVICES = 32;
+			if (numDevices > MAX_NUM_DEVICES) {
+				System.out.println("TJ_Devices numDevices too high! Clip to "
+						+ MAX_NUM_DEVICES);
+				numDevices = MAX_NUM_DEVICES;
+			}
+			for( int i = 0; i < numDevices; i++ )
 			{
 				int maxChannels = getMaxChannels( i );
 				if( maxChannels > 0 )
@@ -370,7 +384,16 @@ public class TJ_Devices extends Applet
 			int maxChannels = (mode == INPUT_MODE) ? AudioDevice
 					.getMaxInputChannels( id ) : AudioDevice
 					.getMaxOutputChannels( id );
-					return maxChannels;
+
+			System.out.println("TJ_Devices.getMaxChannels() id = " + id
+					+ ", maxChannels = " + maxChannels);
+
+			if (maxChannels > MAX_NUM_CHANNELS) {
+				System.out.println("TJ_Devices maxChannels too high! Clip to "
+						+ MAX_NUM_CHANNELS);
+				maxChannels = MAX_NUM_CHANNELS;
+			}
+			return maxChannels;
 		}
 
 		/*public void setNumChannels( int numChannels )
@@ -454,6 +477,7 @@ public class TJ_Devices extends Applet
 		}
 
 
+		@Override
 		public void itemStateChanged(ItemEvent e) {
 			if(e.getItemSelectable() == deviceNames){
 				buildChannelArray();
